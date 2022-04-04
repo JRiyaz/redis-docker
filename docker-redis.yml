@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:latest
+    container_name: docker-redis
+    hostname: redis
+    command: redis-server --requirepass redis123
+    volumes:
+      - redis:/var/lib/redis
+      - redis-config:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    links:
+      - redis-commander
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-commander
+    hostname: redis-commander
+    ports:
+      - "8000:8081"
+    environment:
+      REDIS_HOSTS: redis
+      REDIS_HOST: redis
+      REDIS_PORT: redis:6379
+      REDIS_PASSWORD: redis123
+      HTTP_USER: root
+      HTTP_PASSWORD: root
+
+  redisinsight:
+    image: 'redislabs/redisinsight:latest'
+    container_name: redisInsight
+    hostname: redisInsight
+    ports:
+      - "8001:8001"
+
+
+volumes:
+  redis:
+  redis-config:
